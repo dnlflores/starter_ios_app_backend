@@ -47,7 +47,11 @@ app.get('/users', async (req, res) => {
 // List all tools
 app.get('/tools', async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM tools');
+    const result = await pool.query(
+      `SELECT tools.*, users.username AS owner_username
+       FROM tools
+       JOIN users ON tools.owner_id = users.id`
+    );
     res.send(result.rows);
   } catch (err) {
     res.status(500).send({ error: err.message });
