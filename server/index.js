@@ -128,4 +128,28 @@ app.delete('/tools/:id', async (req, res) => {
   }
 });
 
+// List all chat messages
+app.get('/chats', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM chats ORDER BY created_at');
+    res.send(result.rows);
+  } catch (err) {
+    res.status(500).send({ error: err.message });
+  }
+});
+
+// Create a new chat message
+app.post('/chats', async (req, res) => {
+  const { user_id, message } = req.body;
+  try {
+    const result = await pool.query(
+      'INSERT INTO chats (user_id, message) VALUES ($1, $2) RETURNING *',
+      [user_id, message]
+    );
+    res.status(201).send(result.rows[0]);
+  } catch (err) {
+    res.status(400).send({ error: err.message });
+  }
+});
+
 app.listen(3000, () => console.log('Server running on port 3000'));
