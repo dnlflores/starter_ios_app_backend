@@ -23,7 +23,19 @@ async function setup() {
     CREATE TABLE IF NOT EXISTS users (
       id SERIAL PRIMARY KEY,
       username TEXT UNIQUE NOT NULL,
-      password TEXT NOT NULL
+      password TEXT NOT NULL,
+      email TEXT UNIQUE NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      is_seller BOOLEAN DEFAULT FALSE,
+      is_admin BOOLEAN DEFAULT FALSE,
+      first_name TEXT,
+      last_name TEXT,
+      phone TEXT,
+      address TEXT,
+      city TEXT,
+      state TEXT,
+      zip TEXT
     );
   `);
 
