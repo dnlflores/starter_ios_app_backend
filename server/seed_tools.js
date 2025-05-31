@@ -1,10 +1,104 @@
 const { Pool } = require('pg');
+const bcrypt = require('bcrypt');
 
 const pool = new Pool({
   connectionString: 'postgres://iosuser:secret@localhost:5432/iosdb'
 });
 
 async function seed() {
+  const users = [
+    {
+      username: 'daniel',
+      first_name: 'Daniel',
+      last_name: 'Flores',
+      email: 'daniel@example.com',
+      password: 'password',
+      phone: '555-0100',
+      address: '1 Main St',
+      city: 'Austin',
+      state: 'TX',
+      zip: '73301'
+    },
+    {
+      username: 'alice',
+      first_name: 'Alice',
+      last_name: 'Smith',
+      email: 'alice@example.com',
+      password: 'password',
+      phone: '555-0101',
+      address: '2 Oak Ave',
+      city: 'Dallas',
+      state: 'TX',
+      zip: '75201'
+    },
+    {
+      username: 'bob',
+      first_name: 'Bob',
+      last_name: 'Johnson',
+      email: 'bob@example.com',
+      password: 'password',
+      phone: '555-0102',
+      address: '3 Pine Rd',
+      city: 'Houston',
+      state: 'TX',
+      zip: '77001'
+    },
+    {
+      username: 'carol',
+      first_name: 'Carol',
+      last_name: 'Williams',
+      email: 'carol@example.com',
+      password: 'password',
+      phone: '555-0103',
+      address: '4 Maple Dr',
+      city: 'San Antonio',
+      state: 'TX',
+      zip: '78205'
+    },
+    {
+      username: 'eve',
+      first_name: 'Eve',
+      last_name: 'Davis',
+      email: 'eve@example.com',
+      password: 'password',
+      phone: '555-0104',
+      address: '5 Cedar Ln',
+      city: 'El Paso',
+      state: 'TX',
+      zip: '79901'
+    }
+  ];
+
+  for (const user of users) {
+    const hash = await bcrypt.hash(user.password, 10);
+    await pool.query(
+      `INSERT INTO users (
+        username,
+        password,
+        email,
+        first_name,
+        last_name,
+        phone,
+        address,
+        city,
+        state,
+        zip
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)`,
+      [
+        user.username,
+        hash,
+        user.email,
+        user.first_name,
+        user.last_name,
+        user.phone,
+        user.address,
+        user.city,
+        user.state,
+        user.zip
+      ]
+    );
+  }
+
   const tools = [
     { name: 'Hammer', price: 25, description: 'Standard claw hammer' },
     { name: 'Screwdriver', price: 10, description: 'Flat head screwdriver' },
@@ -38,7 +132,7 @@ async function seed() {
 
 seed()
   .then(() => {
-    console.log('Tools seeded');
+    console.log('Users and tools seeded');
     pool.end();
   })
   .catch(err => {
