@@ -58,10 +58,11 @@ Authorization: Bearer <token>
 ---
 
 ### `GET /tools`
-Return all tools in the database.
+Return all tools in the database. Each tool object includes an
+`owner_username` field from the user who owns the tool.
 
 **Responses**
-- `200 OK` – array of tool objects.
+- `200 OK` – array of tool objects, each with owner information.
 - `500 Internal Server Error` – on database errors.
 
 ---
