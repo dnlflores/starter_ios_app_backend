@@ -95,6 +95,8 @@ Fetch a tool by its numeric `id`.
 ### `POST /tools`
 Create a new tool.
 
+Tool names do not need to be unique. The `owner_id` field should reference an existing user.
+
 **Request Body**
 ```json
 {
@@ -136,6 +138,32 @@ Remove a tool from the database.
 - `204 No Content` – on successful deletion.
 - `404 Not Found` – when the tool does not exist.
 - `400 Bad Request` – on database errors.
+
+---
+
+### `GET /chats`
+Retrieve all chat messages.
+
+**Responses**
+- `200 OK` – array of chat objects.
+- `500 Internal Server Error` – on database errors.
+
+---
+
+### `POST /chats`
+Create a new chat message.
+
+**Request Body**
+```json
+{
+  "user_id": 0,
+  "message": "string"
+}
+```
+
+**Responses**
+- `201 Created` – newly created chat object.
+- `400 Bad Request` – on validation or database errors.
 
 ---
 
