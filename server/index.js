@@ -1,8 +1,11 @@
-const express = require('express');
-const cors = require('cors');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const { Pool } = require('pg');
+import express from 'express';
+import cors from 'cors';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import { Pool } from 'pg';
+import { createClient } from '@supabase/supabase-js';
+import { supabase } from './supabaseClient.js';
+
 
 const app = express();
 app.use(cors());
@@ -41,6 +44,23 @@ app.get('/users', async (req, res) => {
     res.send(result.rows);
   } catch {
     res.status(401).send({ error: 'Unauthorized' });
+  }
+  try {
+    jwt.verify(token, SECRET);
+    // Supabase's syntax: .from('<table>').select('<columns>')
+    const { data, error } = await supabase
+      .from('users')
+      .select('id, email, name');
+
+    if (error) {
+      console.error('Supabase select error:', error);
+      return res.status(500).json({ error: error.message });
+    }
+
+    return res.json(data);
+  } catch (err) {
+    console.error('Unexpected error:', err);
+    return res.status(500).json({ error: 'Unknown server error' });
   }
 });
 
