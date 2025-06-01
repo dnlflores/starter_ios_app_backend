@@ -37,7 +37,7 @@ app.get('/users', async (req, res) => {
   const token = authHeader?.split(' ')[1];
   try {
     jwt.verify(token, SECRET);
-    const result = await pool.query('SELECT id, username FROM users');
+    const result = await pool.query('SELECT id, username, email, first_name, last_name, phone, address, city, state, zip FROM users');
     res.send(result.rows);
   } catch {
     res.status(401).send({ error: 'Unauthorized' });
