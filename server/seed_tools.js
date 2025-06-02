@@ -1,9 +1,12 @@
-const { Pool } = require('pg');
+const { createClient } = require('@supabase/supabase-js');
 const bcrypt = require('bcrypt');
 
-const pool = new Pool({
-  connectionString: 'postgres://iosuser:secret@localhost:5432/iosdb'
-});
+// Connect to Supabase using environment variables. The service role key is
+// preferred so the script can bypass RLS policies if they exist.
+const supabaseUrl = process.env.SUPABASE_URL || '';
+const supabaseKey =
+  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_KEY || '';
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 async function seed() {
   const users = [
@@ -71,32 +74,19 @@ async function seed() {
 
   for (const user of users) {
     const hash = await bcrypt.hash(user.password, 10);
-    await pool.query(
-      `INSERT INTO users (
-        username,
-        password,
-        email,
-        first_name,
-        last_name,
-        phone,
-        address,
-        city,
-        state,
-        zip
-      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)`,
-      [
-        user.username,
-        hash,
-        user.email,
-        user.first_name,
-        user.last_name,
-        user.phone,
-        user.address,
-        user.city,
-        user.state,
-        user.zip
-      ]
-    );
+    const { error } = await supabase.from('users').insert({
+      username: user.username,
+      password: hash,
+      email: user.email,
+      first_name: user.first_name,
+      last_name: user.last_name,
+      phone: user.phone,
+      address: user.address,
+      city: user.city,
+      state: user.state,
+      zip: user.zip,
+    });
+    if (error) throw error;
   }
 
   const tools = [
@@ -123,19 +113,20 @@ async function seed() {
   ];
 
   for (const tool of tools) {
-    await pool.query(
-      'INSERT INTO tools (name, price, description, owner_id) VALUES ($1, $2, $3, $4)',
-      [tool.name, tool.price, tool.description, 1]
-    );
+    const { error } = await supabase.from('tools').insert({
+      name: tool.name,
+      price: tool.price,
+      description: tool.description,
+      owner_id: 1,
+    });
+    if (error) throw error;
   }
 }
 
 seed()
   .then(() => {
     console.log('Users and tools seeded');
-    pool.end();
   })
   .catch(err => {
     console.error(err);
-    pool.end();
   });
