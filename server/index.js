@@ -1,34 +1,37 @@
-import express from 'express';
-import cors from 'cors';
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
-import { Pool } from 'pg';
-import { createClient } from '@supabase/supabase-js';
-import { supabase } from './supabaseClient.js';
-
+const express = require('express');
+const cors = require('cors');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const { createClient } = require('@supabase/supabase-js');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-const pool = new Pool({
-  connectionString: 'postgres://iosuser:secret@localhost:5432/iosdb'
-});
+const supabaseUrl = process.env.SUPABASE_URL || '';
+const supabaseKey = process.env.SUPABASE_KEY || '';
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 const SECRET = 'your_jwt_secret';
 
 app.post('/signup', async (req, res) => {
   const { username, password } = req.body;
   const hash = await bcrypt.hash(password, 10);
-  await pool.query('INSERT INTO users (username, password) VALUES ($1, $2)', [username, hash]);
+  const { error } = await supabase.from('users').insert({ username, password: hash });
+  if (error) {
+    return res.status(400).send({ error: error.message });
+  }
   res.status(201).send({ message: 'User created' });
 });
 
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
-  const result = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
-  const user = result.rows[0];
-  if (!user || !(await bcrypt.compare(password, user.password))) {
+  const { data: user, error } = await supabase
+    .from('users')
+    .select('*')
+    .eq('username', username)
+    .maybeSingle();
+  if (error || !user || !(await bcrypt.compare(password, user.password))) {
     return res.status(401).send({ error: 'Invalid credentials' });
   }
   const token = jwt.sign({ id: user.id, username: user.username }, SECRET);
@@ -40,8 +43,13 @@ app.get('/users', async (req, res) => {
   const token = authHeader?.split(' ')[1];
   try {
     jwt.verify(token, SECRET);
-    const result = await pool.query('SELECT id, username, email, first_name, last_name, phone, address, city, state, zip FROM users');
-    res.send(result.rows);
+    const { data, error } = await supabase
+      .from('users')
+      .select('id, username, email, first_name, last_name, phone, address, city, state, zip');
+    if (error) {
+      throw error;
+    }
+    res.send(data);
   } catch {
     res.status(401).send({ error: 'Unauthorized' });
   }
@@ -67,12 +75,27 @@ app.get('/users', async (req, res) => {
 // List all tools
 app.get('/tools', async (req, res) => {
   try {
-    const result = await pool.query(
-      `SELECT tools.*, users.username AS owner_username, users.email AS owner_email, users.first_name AS owner_first_name, users.last_name AS owner_last_name, users.phone AS owner_phone, users.address AS owner_address, users.city AS owner_city, users.state AS owner_state, users.zip AS owner_zip
-       FROM tools
-       JOIN users ON tools.owner_id = users.id`
-    );
-    res.send(result.rows);
+    const { data, error } = await supabase
+      .from('tools')
+      .select('*, owner:users(id, username, email, first_name, last_name, phone, address, city, state, zip)');
+    if (error) throw error;
+    const tools = data.map(t => ({
+      id: t.id,
+      name: t.name,
+      price: t.price,
+      description: t.description,
+      owner_id: t.owner_id,
+      owner_username: t.owner?.username,
+      owner_email: t.owner?.email,
+      owner_first_name: t.owner?.first_name,
+      owner_last_name: t.owner?.last_name,
+      owner_phone: t.owner?.phone,
+      owner_address: t.owner?.address,
+      owner_city: t.owner?.city,
+      owner_state: t.owner?.state,
+      owner_zip: t.owner?.zip,
+    }));
+    res.send(tools);
   } catch (err) {
     res.status(500).send({ error: err.message });
   }
@@ -82,11 +105,16 @@ app.get('/tools', async (req, res) => {
 app.get('/tools/name/:name', async (req, res) => {
   const { name } = req.params;
   try {
-    const result = await pool.query('SELECT * FROM tools WHERE name = $1', [name]);
-    if (!result.rows.length) {
+    const { data, error } = await supabase
+      .from('tools')
+      .select('*')
+      .eq('name', name)
+      .maybeSingle();
+    if (error) throw error;
+    if (!data) {
       return res.status(404).send({ error: 'Tool not found' });
     }
-    res.send(result.rows[0]);
+    res.send(data);
   } catch (err) {
     res.status(500).send({ error: err.message });
   }
@@ -96,11 +124,16 @@ app.get('/tools/name/:name', async (req, res) => {
 app.get('/tools/:id', async (req, res) => {
   const { id } = req.params;
   try {
-    const result = await pool.query('SELECT * FROM tools WHERE id = $1', [id]);
-    if (!result.rows.length) {
+    const { data, error } = await supabase
+      .from('tools')
+      .select('*')
+      .eq('id', id)
+      .maybeSingle();
+    if (error) throw error;
+    if (!data) {
       return res.status(404).send({ error: 'Tool not found' });
     }
-    res.send(result.rows[0]);
+    res.send(data);
   } catch (err) {
     res.status(500).send({ error: err.message });
   }
@@ -110,11 +143,13 @@ app.get('/tools/:id', async (req, res) => {
 app.post('/tools', async (req, res) => {
   const { name, price, description, owner_id } = req.body;
   try {
-    const result = await pool.query(
-      'INSERT INTO tools (name, price, description, owner_id) VALUES ($1, $2, $3, $4) RETURNING *',
-      [name, price, description, owner_id]
-    );
-    res.status(201).send(result.rows[0]);
+    const { data, error } = await supabase
+      .from('tools')
+      .insert({ name, price, description, owner_id })
+      .select()
+      .maybeSingle();
+    if (error) throw error;
+    res.status(201).send(data);
   } catch (err) {
     res.status(400).send({ error: err.message });
   }
@@ -125,14 +160,17 @@ app.put('/tools/:id', async (req, res) => {
   const { id } = req.params;
   const { name, price, description, owner_id } = req.body;
   try {
-    const result = await pool.query(
-      'UPDATE tools SET name = $1, price = $2, description = $3, owner_id = $4 WHERE id = $5 RETURNING *',
-      [name, price, description, owner_id, id]
-    );
-    if (!result.rows.length) {
+    const { data, error } = await supabase
+      .from('tools')
+      .update({ name, price, description, owner_id })
+      .eq('id', id)
+      .select()
+      .maybeSingle();
+    if (error) throw error;
+    if (!data) {
       return res.status(404).send({ error: 'Tool not found' });
     }
-    res.send(result.rows[0]);
+    res.send(data);
   } catch (err) {
     res.status(400).send({ error: err.message });
   }
@@ -142,8 +180,12 @@ app.put('/tools/:id', async (req, res) => {
 app.delete('/tools/:id', async (req, res) => {
   const { id } = req.params;
   try {
-    const result = await pool.query('DELETE FROM tools WHERE id = $1', [id]);
-    if (result.rowCount === 0) {
+    const { error, count } = await supabase
+      .from('tools')
+      .delete({ count: 'exact' })
+      .eq('id', id);
+    if (error) throw error;
+    if (count === 0) {
       return res.status(404).send({ error: 'Tool not found' });
     }
     res.status(204).send();
@@ -155,8 +197,12 @@ app.delete('/tools/:id', async (req, res) => {
 // List all chat messages
 app.get('/chats', async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM chats ORDER BY created_at');
-    res.send(result.rows);
+    const { data, error } = await supabase
+      .from('chats')
+      .select('*')
+      .order('created_at');
+    if (error) throw error;
+    res.send(data);
   } catch (err) {
     res.status(500).send({ error: err.message });
   }
@@ -166,11 +212,13 @@ app.get('/chats', async (req, res) => {
 app.post('/chats', async (req, res) => {
   const { user_id, message } = req.body;
   try {
-    const result = await pool.query(
-      'INSERT INTO chats (user_id, message) VALUES ($1, $2) RETURNING *',
-      [user_id, message]
-    );
-    res.status(201).send(result.rows[0]);
+    const { data, error } = await supabase
+      .from('chats')
+      .insert({ user_id, message })
+      .select()
+      .maybeSingle();
+    if (error) throw error;
+    res.status(201).send(data);
   } catch (err) {
     res.status(400).send({ error: err.message });
   }
