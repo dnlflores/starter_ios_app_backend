@@ -106,11 +106,11 @@ app.get('/tools/:id', async (req, res) => {
 
 // Create a new tool
 app.post('/tools', authenticateToken, async (req, res) => {
-  const { name, price, description, owner_id } = req.body;
+  const { name, price, description, owner_id, created_at } = req.body;
   try {
     const result = await pool.query(
-      'INSERT INTO tools (name, price, description, owner_id) VALUES ($1, $2, $3, $4) RETURNING *',
-      [name, price, description, owner_id]
+      'INSERT INTO tools (name, price, description, owner_id, created_at) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+      [name, price, description, owner_id, created_at]
     );
     res.status(201).send(result.rows[0]);
   } catch (err) {
