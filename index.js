@@ -15,6 +15,8 @@ const pool = new Pool({
   },
 });
 
+const SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
+
 app.post('/signup', async (req, res) => {
   const { username, password } = req.body;
   const hash = await bcrypt.hash(password, 10);
