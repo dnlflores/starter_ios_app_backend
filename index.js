@@ -63,7 +63,7 @@ app.get('/users', authenticateToken, async (req, res) => {
 });
 
 // List all tools
-app.get('/tools', authenticateToken, async (req, res) => {
+app.get('/tools', async (req, res) => {
   try {
     const result = await pool.query(
       `SELECT tools.*, users.username AS owner_username, users.email AS owner_email, users.first_name AS owner_first_name, users.last_name AS owner_last_name, users.phone AS owner_phone, users.address AS owner_address, users.city AS owner_city, users.state AS owner_state, users.zip AS owner_zip
