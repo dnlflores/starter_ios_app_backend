@@ -36,9 +36,9 @@ const authenticateToken = (req, res, next) => {
 };
 
 app.post('/signup', async (req, res) => {
-  const { username, password } = req.body;
+  const { username, password, email, first_name, last_name, phone, address, city, state, zip } = req.body;
   const hash = await bcrypt.hash(password, 10);
-  await pool.query('INSERT INTO users (username, password) VALUES ($1, $2)', [username, hash]);
+  await pool.query('INSERT INTO users (username, password, email, first_name, last_name, phone, address, city, state, zip) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)', [username, hash, email, first_name, last_name, phone, address, city, state, zip]);
   res.status(201).send({ message: 'User created' });
 });
 
