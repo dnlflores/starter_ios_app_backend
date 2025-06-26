@@ -87,26 +87,26 @@ async function seed() {
     }
 
     const tools = [
-      { name: 'Hammer', price: 25, description: 'Standard claw hammer', image_url: null, is_available: true, latitude: null, longitude: null },
-      { name: 'Screwdriver', price: 10, description: 'Flat head screwdriver', image_url: null, is_available: true, latitude: null, longitude: null },
-      { name: 'Wrench', price: 15, description: 'Adjustable wrench', image_url: null, is_available: true, latitude: null, longitude: null },
-      { name: 'Pliers', price: 12, description: 'Needle nose pliers', image_url: null, is_available: true, latitude: null, longitude: null },
-      { name: 'Saw', price: 20, description: 'Hand saw for wood', image_url: null, is_available: true, latitude: null, longitude: null },
-      { name: 'Drill', price: 80, description: 'Cordless power drill', image_url: null, is_available: true, latitude: null, longitude: null },
-      { name: 'Sander', price: 45, description: 'Electric orbital sander', image_url: null, is_available: true, latitude: null, longitude: null },
-      { name: 'Chisel', price: 18, description: 'Wood chisel set', image_url: null, is_available: true, latitude: null, longitude: null },
-      { name: 'Tape Measure', price: 8, description: '25-foot tape measure', image_url: null, is_available: true, latitude: null, longitude: null },
-      { name: 'Level', price: 14, description: '24-inch bubble level', image_url: null, is_available: true, latitude: null, longitude: null },
-      { name: 'Utility Knife', price: 9, description: 'Retractable utility knife', image_url: null, is_available: true, latitude: null, longitude: null },
-      { name: 'Flashlight', price: 16, description: 'LED work flashlight', image_url: null, is_available: true, latitude: null, longitude: null },
-      { name: 'Ladder', price: 120, description: '6-foot step ladder', image_url: null, is_available: true, latitude: null, longitude: null },
-      { name: 'Crowbar', price: 22, description: 'Heavy duty crowbar', image_url: null, is_available: true, latitude: null, longitude: null },
-      { name: 'Socket Set', price: 55, description: 'Metric socket set', image_url: null, is_available: true, latitude: null, longitude: null },
-      { name: 'Stud Finder', price: 30, description: 'Electronic stud finder', image_url: null, is_available: true, latitude: null, longitude: null },
-      { name: 'Wire Stripper', price: 13, description: 'Automatic wire stripper', image_url: null, is_available: true, latitude: null, longitude: null },
-      { name: 'Paint Brush', price: 7, description: '2-inch paint brush', image_url: null, is_available: true, latitude: null, longitude: null },
-      { name: 'Welding Mask', price: 65, description: 'Auto-darkening welding mask', image_url: null, is_available: true, latitude: null, longitude: null },
-      { name: 'Air Compressor', price: 150, description: 'Portable air compressor', image_url: null, is_available: true, latitude: null, longitude: null }
+      { name: 'Hammer', price: 25, description: 'Standard claw hammer', image_url: 'https://via.placeholder.com/300x200/4f46e5/ffffff?text=Hammer', is_available: true, latitude: 30.2672, longitude: -97.7431 },
+      { name: 'Screwdriver', price: 10, description: 'Flat head screwdriver', image_url: 'https://via.placeholder.com/300x200/4f46e5/ffffff?text=Screwdriver', is_available: true, latitude: 30.2676, longitude: -97.7435 },
+      { name: 'Wrench', price: 15, description: 'Adjustable wrench', image_url: 'https://via.placeholder.com/300x200/4f46e5/ffffff?text=Wrench', is_available: true, latitude: 30.2680, longitude: -97.7439 },
+      { name: 'Pliers', price: 12, description: 'Needle nose pliers', image_url: 'https://via.placeholder.com/300x200/4f46e5/ffffff?text=Pliers', is_available: true, latitude: 30.2684, longitude: -97.7443 },
+      { name: 'Saw', price: 20, description: 'Hand saw for wood', image_url: 'https://via.placeholder.com/300x200/4f46e5/ffffff?text=Saw', is_available: true, latitude: 30.2688, longitude: -97.7447 },
+      { name: 'Drill', price: 80, description: 'Cordless power drill', image_url: 'https://via.placeholder.com/300x200/4f46e5/ffffff?text=Drill', is_available: true, latitude: 30.2692, longitude: -97.7451 },
+      { name: 'Sander', price: 45, description: 'Electric orbital sander', image_url: 'https://via.placeholder.com/300x200/4f46e5/ffffff?text=Sander', is_available: true, latitude: 30.2696, longitude: -97.7455 },
+      { name: 'Chisel', price: 18, description: 'Wood chisel set', image_url: 'https://via.placeholder.com/300x200/4f46e5/ffffff?text=Chisel', is_available: true, latitude: 30.2700, longitude: -97.7459 },
+      { name: 'Tape Measure', price: 8, description: '25-foot tape measure', image_url: 'https://via.placeholder.com/300x200/4f46e5/ffffff?text=Tape+Measure', is_available: true, latitude: 30.2704, longitude: -97.7463 },
+      { name: 'Level', price: 14, description: '24-inch bubble level', image_url: 'https://via.placeholder.com/300x200/4f46e5/ffffff?text=Level', is_available: true, latitude: 30.2708, longitude: -97.7467 },
+      { name: 'Utility Knife', price: 9, description: 'Retractable utility knife', image_url: 'https://via.placeholder.com/300x200/4f46e5/ffffff?text=Utility+Knife', is_available: true, latitude: 30.2712, longitude: -97.7471 },
+      { name: 'Flashlight', price: 16, description: 'LED work flashlight', image_url: 'https://via.placeholder.com/300x200/4f46e5/ffffff?text=Flashlight', is_available: true, latitude: 30.2716, longitude: -97.7475 },
+      { name: 'Ladder', price: 120, description: '6-foot step ladder', image_url: 'https://via.placeholder.com/300x200/4f46e5/ffffff?text=Ladder', is_available: true, latitude: 30.2720, longitude: -97.7479 },
+      { name: 'Crowbar', price: 22, description: 'Heavy duty crowbar', image_url: 'https://via.placeholder.com/300x200/4f46e5/ffffff?text=Crowbar', is_available: true, latitude: 30.2724, longitude: -97.7483 },
+      { name: 'Socket Set', price: 55, description: 'Metric socket set', image_url: 'https://via.placeholder.com/300x200/4f46e5/ffffff?text=Socket+Set', is_available: true, latitude: 30.2728, longitude: -97.7487 },
+      { name: 'Stud Finder', price: 30, description: 'Electronic stud finder', image_url: 'https://via.placeholder.com/300x200/4f46e5/ffffff?text=Stud+Finder', is_available: true, latitude: 30.2732, longitude: -97.7491 },
+      { name: 'Wire Stripper', price: 13, description: 'Automatic wire stripper', image_url: 'https://via.placeholder.com/300x200/4f46e5/ffffff?text=Wire+Stripper', is_available: true, latitude: 30.2736, longitude: -97.7495 },
+      { name: 'Paint Brush', price: 7, description: '2-inch paint brush', image_url: 'https://via.placeholder.com/300x200/4f46e5/ffffff?text=Paint+Brush', is_available: true, latitude: 30.2740, longitude: -97.7499 },
+      { name: 'Welding Mask', price: 65, description: 'Auto-darkening welding mask', image_url: 'https://via.placeholder.com/300x200/4f46e5/ffffff?text=Welding+Mask', is_available: true, latitude: 30.2744, longitude: -97.7503 },
+      { name: 'Air Compressor', price: 150, description: 'Portable air compressor', image_url: 'https://via.placeholder.com/300x200/4f46e5/ffffff?text=Air+Compressor', is_available: true, latitude: 30.2748, longitude: -97.7507 }
     ];
 
     // Insert tools (assign to first user - Daniel)
