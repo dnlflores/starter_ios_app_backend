@@ -10,20 +10,6 @@ const pool = new Pool({
 async function setup() {
   try {
     console.log('Setting up database tables...');
-    
-    // Drop existing tables in correct order (respecting foreign key constraints)
-    await pool.query('DROP TABLE IF EXISTS pokemon_stat CASCADE');
-    await pool.query('DROP TABLE IF EXISTS pokemon_type CASCADE');
-    await pool.query('DROP TABLE IF EXISTS pokemon_move CASCADE');
-    await pool.query('DROP TABLE IF EXISTS pokemon_ability CASCADE');
-    await pool.query('DROP TABLE IF EXISTS pokemon CASCADE');
-    await pool.query('DROP TABLE IF EXISTS stat CASCADE');
-    await pool.query('DROP TABLE IF EXISTS type CASCADE');
-    await pool.query('DROP TABLE IF EXISTS move CASCADE');
-    await pool.query('DROP TABLE IF EXISTS ability CASCADE');
-    await pool.query('DROP TABLE IF EXISTS chats CASCADE');
-    await pool.query('DROP TABLE IF EXISTS tools CASCADE');
-    await pool.query('DROP TABLE IF EXISTS users CASCADE');
 
     // Create basic users table used for authentication
     await pool.query(`
@@ -42,7 +28,9 @@ async function setup() {
         address TEXT,
         city TEXT,
         state TEXT,
-        zip TEXT
+        zip TEXT,
+        latitude NUMERIC,
+        longitude NUMERIC
       );
     `);
 
@@ -54,7 +42,12 @@ async function setup() {
         price NUMERIC,
         description TEXT,
         owner_id INTEGER REFERENCES users(id),
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        image_url TEXT,
+        is_available BOOLEAN DEFAULT TRUE,
+        latitude NUMERIC,
+        longitude NUMERIC
       );
     `);
 
