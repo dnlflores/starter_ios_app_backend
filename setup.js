@@ -51,14 +51,37 @@ async function setup() {
       );
     `);
 
-    // Table for storing chat messages
+    // Table for storing chat messages between sellers and buyers
     await pool.query(`
       CREATE TABLE IF NOT EXISTS chats (
         id SERIAL PRIMARY KEY,
-        user_id INTEGER REFERENCES users(id),
+        sender_id INTEGER REFERENCES users(id) NOT NULL,
+        recipient_id INTEGER REFERENCES users(id) NOT NULL,
         message TEXT NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        image_url TEXT,
+        is_edited BOOLEAN DEFAULT FALSE,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        edited_at TIMESTAMP,
+        conversation_id TEXT GENERATED ALWAYS AS (
+          CASE 
+            WHEN sender_id < recipient_id THEN sender_id || '_' || recipient_id
+            ELSE recipient_id || '_' || sender_id
+          END
+        ) STORED
       );
+    `);
+
+    // Create index for faster conversation queries
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_chats_conversation 
+      ON chats(conversation_id, created_at);
+    `);
+
+    // Create index for faster user-specific queries
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_chats_users 
+      ON chats(sender_id, recipient_id);
     `);
 
     console.log('Database tables created successfully');
