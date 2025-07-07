@@ -62,20 +62,14 @@ async function setup() {
         is_edited BOOLEAN DEFAULT FALSE,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        edited_at TIMESTAMP,
-        conversation_id TEXT GENERATED ALWAYS AS (
-          CASE 
-            WHEN sender_id < recipient_id THEN sender_id || '_' || recipient_id
-            ELSE recipient_id || '_' || sender_id
-          END
-        ) STORED
+        edited_at TIMESTAMP
       );
     `);
 
-    // Create index for faster conversation queries
+    // Create index for faster conversation queries (using both sender and recipient)
     await pool.query(`
       CREATE INDEX IF NOT EXISTS idx_chats_conversation 
-      ON chats(conversation_id, created_at);
+      ON chats(sender_id, recipient_id, created_at);
     `);
 
     // Create index for faster user-specific queries
