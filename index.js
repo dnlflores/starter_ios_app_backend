@@ -150,10 +150,119 @@ app.delete('/tools/:id', authenticateToken, async (req, res) => {
   }
 });
 
-// List all chat messages
-app.get('/chats', async (req, res) => {
+// List all chat messages with sender and recipient info
+app.get('/chats', authenticateToken, async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM chats ORDER BY created_at');
+    const result = await pool.query(`
+      SELECT 
+        c.*,
+        s.username AS sender_username,
+        s.first_name AS sender_first_name,
+        s.last_name AS sender_last_name,
+        r.username AS recipient_username,
+        r.first_name AS recipient_first_name,
+        r.last_name AS recipient_last_name
+      FROM chats c
+      JOIN users s ON c.sender_id = s.id
+      JOIN users r ON c.recipient_id = r.id
+      ORDER BY c.created_at DESC
+    `);
+    res.send(result.rows);
+  } catch (err) {
+    res.status(500).send({ error: err.message });
+  }
+});
+
+// Get a specific chat message by ID
+app.get('/chats/:id', authenticateToken, async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await pool.query(`
+      SELECT 
+        c.*,
+        s.username AS sender_username,
+        s.first_name AS sender_first_name,
+        s.last_name AS sender_last_name,
+        r.username AS recipient_username,
+        r.first_name AS recipient_first_name,
+        r.last_name AS recipient_last_name
+      FROM chats c
+      JOIN users s ON c.sender_id = s.id
+      JOIN users r ON c.recipient_id = r.id
+      WHERE c.id = $1
+    `, [id]);
+    
+    if (!result.rows.length) {
+      return res.status(404).send({ error: 'Chat message not found' });
+    }
+    
+    res.send(result.rows[0]);
+  } catch (err) {
+    res.status(500).send({ error: err.message });
+  }
+});
+
+// Get conversation between authenticated user and another user
+app.get('/chats/conversation/:userId', authenticateToken, async (req, res) => {
+  const { userId } = req.params;
+  const currentUserId = req.user.id;
+  
+  try {
+    const result = await pool.query(`
+      SELECT 
+        c.*,
+        s.username AS sender_username,
+        s.first_name AS sender_first_name,
+        s.last_name AS sender_last_name,
+        r.username AS recipient_username,
+        r.first_name AS recipient_first_name,
+        r.last_name AS recipient_last_name
+      FROM chats c
+      JOIN users s ON c.sender_id = s.id
+      JOIN users r ON c.recipient_id = r.id
+      WHERE (c.sender_id = $1 AND c.recipient_id = $2) 
+         OR (c.sender_id = $2 AND c.recipient_id = $1)
+      ORDER BY c.created_at ASC
+    `, [currentUserId, userId]);
+    
+    res.send(result.rows);
+  } catch (err) {
+    res.status(500).send({ error: err.message });
+  }
+});
+
+// Get all conversations for the authenticated user
+app.get('/chats/conversations', authenticateToken, async (req, res) => {
+  const currentUserId = req.user.id;
+  
+  try {
+    const result = await pool.query(`
+      SELECT DISTINCT
+        CASE 
+          WHEN c.sender_id = $1 THEN c.recipient_id
+          ELSE c.sender_id
+        END AS other_user_id,
+        CASE 
+          WHEN c.sender_id = $1 THEN r.username
+          ELSE s.username
+        END AS other_user_username,
+        CASE 
+          WHEN c.sender_id = $1 THEN r.first_name
+          ELSE s.first_name
+        END AS other_user_first_name,
+        CASE 
+          WHEN c.sender_id = $1 THEN r.last_name
+          ELSE s.last_name
+        END AS other_user_last_name,
+        MAX(c.created_at) AS last_message_time
+      FROM chats c
+      JOIN users s ON c.sender_id = s.id
+      JOIN users r ON c.recipient_id = r.id
+      WHERE c.sender_id = $1 OR c.recipient_id = $1
+      GROUP BY other_user_id, other_user_username, other_user_first_name, other_user_last_name
+      ORDER BY last_message_time DESC
+    `, [currentUserId]);
+    
     res.send(result.rows);
   } catch (err) {
     res.status(500).send({ error: err.message });
@@ -161,14 +270,57 @@ app.get('/chats', async (req, res) => {
 });
 
 // Create a new chat message
-app.post('/chats', async (req, res) => {
-  const { user_id, message } = req.body;
+app.post('/chats', authenticateToken, async (req, res) => {
+  const { recipient_id, message, image_url } = req.body;
+  const sender_id = req.user.id;
+  
   try {
     const result = await pool.query(
-      'INSERT INTO chats (user_id, message) VALUES ($1, $2) RETURNING *',
-      [user_id, message]
+      'INSERT INTO chats (sender_id, recipient_id, message, image_url) VALUES ($1, $2, $3, $4) RETURNING *',
+      [sender_id, recipient_id, message, image_url]
     );
     res.status(201).send(result.rows[0]);
+  } catch (err) {
+    res.status(400).send({ error: err.message });
+  }
+});
+
+// Update a chat message
+app.put('/chats/:id', authenticateToken, async (req, res) => {
+  const { id } = req.params;
+  const { message, image_url } = req.body;
+  const userId = req.user.id;
+  
+  try {
+    // Check if the message exists and belongs to the authenticated user
+    const checkResult = await pool.query('SELECT * FROM chats WHERE id = $1 AND sender_id = $2', [id, userId]);
+    if (!checkResult.rows.length) {
+      return res.status(404).send({ error: 'Chat message not found or you are not authorized to edit it' });
+    }
+    
+    const result = await pool.query(
+      'UPDATE chats SET message = $1, image_url = $2, is_edited = TRUE, edited_at = CURRENT_TIMESTAMP, updated_at = CURRENT_TIMESTAMP WHERE id = $3 RETURNING *',
+      [message, image_url, id]
+    );
+    
+    res.send(result.rows[0]);
+  } catch (err) {
+    res.status(400).send({ error: err.message });
+  }
+});
+
+// Delete a chat message
+app.delete('/chats/:id', authenticateToken, async (req, res) => {
+  const { id } = req.params;
+  const userId = req.user.id;
+  
+  try {
+    // Check if the message exists and belongs to the authenticated user
+    const result = await pool.query('DELETE FROM chats WHERE id = $1 AND sender_id = $2', [id, userId]);
+    if (result.rowCount === 0) {
+      return res.status(404).send({ error: 'Chat message not found or you are not authorized to delete it' });
+    }
+    res.status(204).send();
   } catch (err) {
     res.status(400).send({ error: err.message });
   }
