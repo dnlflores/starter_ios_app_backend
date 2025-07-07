@@ -52,8 +52,14 @@ async function setup() {
     `);
 
     // Table for storing chat messages between sellers and buyers
+    console.log('Creating chats table...');
+    
+    // Drop the existing chats table if it exists to ensure we have the correct structure
+    await pool.query(`DROP TABLE IF EXISTS chats;`);
+    
+    // Create the new chats table with the correct structure
     await pool.query(`
-      CREATE TABLE IF NOT EXISTS chats (
+      CREATE TABLE chats (
         id SERIAL PRIMARY KEY,
         sender_id INTEGER REFERENCES users(id) NOT NULL,
         recipient_id INTEGER REFERENCES users(id) NOT NULL,
@@ -65,8 +71,10 @@ async function setup() {
         edited_at TIMESTAMP
       );
     `);
+    console.log('Chats table created successfully');
 
     // Create index for faster conversation queries (using both sender and recipient)
+    console.log('Creating chats indexes...');
     await pool.query(`
       CREATE INDEX IF NOT EXISTS idx_chats_conversation 
       ON chats(sender_id, recipient_id, created_at);
@@ -77,6 +85,7 @@ async function setup() {
       CREATE INDEX IF NOT EXISTS idx_chats_users 
       ON chats(sender_id, recipient_id);
     `);
+    console.log('Chats indexes created successfully');
 
     console.log('Database tables created successfully');
     return true;
