@@ -168,6 +168,78 @@ Create a new chat message.
 
 ---
 
+## Push Notifications
+
+### `POST /device-token`
+Register a device token for push notifications. Requires authentication.
+
+**Headers**
+```
+Authorization: Bearer <token>
+```
+
+**Request Body**
+```json
+{
+  "device_token": "string",
+  "platform": "ios"
+}
+```
+
+**Responses**
+- `200 OK` – `{ "message": "Device token registered successfully" }`
+- `400 Bad Request` – when device_token is missing
+- `401 Unauthorized` – when authentication fails
+- `500 Internal Server Error` – on database errors
+
+---
+
+### `DELETE /device-token`
+Unregister a device token. Requires authentication.
+
+**Headers**
+```
+Authorization: Bearer <token>
+```
+
+**Request Body**
+```json
+{
+  "device_token": "string"
+}
+```
+
+**Responses**
+- `200 OK` – `{ "message": "Device token unregistered successfully" }`
+- `400 Bad Request` – when device_token is missing
+- `401 Unauthorized` – when authentication fails
+- `500 Internal Server Error` – on database errors
+
+---
+
+### `POST /test-notification`
+Send a test push notification (development only). Requires authentication.
+
+**Headers**
+```
+Authorization: Bearer <token>
+```
+
+**Request Body**
+```json
+{
+  "title": "string",
+  "body": "string"
+}
+```
+
+**Responses**
+- `200 OK` – `{ "message": "Test notification sent successfully" }`
+- `401 Unauthorized` – when authentication fails
+- `500 Internal Server Error` – on notification service errors
+
+---
+
 ## Error Responses
 Every endpoint returns a JSON object containing an `error` field when a request fails. The message provides a short description of the problem.
 

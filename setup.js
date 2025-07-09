@@ -87,6 +87,28 @@ async function setup() {
     `);
     console.log('Chats indexes created successfully');
 
+    // Create device_tokens table for push notifications
+    console.log('Creating device_tokens table...');
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS device_tokens (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER REFERENCES users(id) NOT NULL,
+        device_token TEXT NOT NULL,
+        platform TEXT DEFAULT 'ios',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        is_active BOOLEAN DEFAULT TRUE,
+        UNIQUE(user_id, device_token)
+      );
+    `);
+
+    // Create index for faster device token queries
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_device_tokens_user 
+      ON device_tokens(user_id, is_active);
+    `);
+    console.log('Device tokens table created successfully');
+
     console.log('Database tables created successfully');
     return true;
   } catch (err) {

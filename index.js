@@ -3,6 +3,7 @@ import cors from 'cors';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { Pool } from 'pg';
+import pushService from './push-service.js';
 
 const app = express();
 app.use(cors());
@@ -59,6 +60,56 @@ app.get('/users', authenticateToken, async (req, res) => {
     res.send(result.rows);
   } catch (err) {
     res.status(500).send({ error: err.message });
+  }
+});
+
+// Device token registration endpoint
+app.post('/device-token', authenticateToken, async (req, res) => {
+  const { device_token, platform = 'ios' } = req.body;
+  const userId = req.user.id;
+  
+  if (!device_token) {
+    return res.status(400).send({ error: 'Device token is required' });
+  }
+  
+  try {
+    await pushService.registerDeviceToken(userId, device_token, platform);
+    res.send({ message: 'Device token registered successfully' });
+  } catch (err) {
+    console.error('Error registering device token:', err);
+    res.status(500).send({ error: 'Failed to register device token' });
+  }
+});
+
+// Device token unregistration endpoint
+app.delete('/device-token', authenticateToken, async (req, res) => {
+  const { device_token } = req.body;
+  const userId = req.user.id;
+  
+  if (!device_token) {
+    return res.status(400).send({ error: 'Device token is required' });
+  }
+  
+  try {
+    await pushService.unregisterDeviceToken(userId, device_token);
+    res.send({ message: 'Device token unregistered successfully' });
+  } catch (err) {
+    console.error('Error unregistering device token:', err);
+    res.status(500).send({ error: 'Failed to unregister device token' });
+  }
+});
+
+// Test notification endpoint (development only)
+app.post('/test-notification', authenticateToken, async (req, res) => {
+  const { title = 'Test Notification', body = 'This is a test notification' } = req.body;
+  const userId = req.user.id;
+  
+  try {
+    await pushService.sendNotificationToUser(userId, title, body, { type: 'test' });
+    res.send({ message: 'Test notification sent successfully' });
+  } catch (err) {
+    console.error('Error sending test notification:', err);
+    res.status(500).send({ error: 'Failed to send test notification' });
   }
 });
 
@@ -279,7 +330,20 @@ app.post('/chats', authenticateToken, async (req, res) => {
       'INSERT INTO chats (sender_id, recipient_id, message, image_url) VALUES ($1, $2, $3, $4) RETURNING *',
       [sender_id, recipient_id, message, image_url]
     );
-    res.status(201).send(result.rows[0]);
+    
+    const newMessage = result.rows[0];
+    
+    // Send push notification to recipient (async, don't wait for it)
+    pushService.sendChatNotification(
+      sender_id,
+      recipient_id,
+      message,
+      newMessage.id
+    ).catch(err => {
+      console.error('Failed to send push notification:', err);
+    });
+    
+    res.status(201).send(newMessage);
   } catch (err) {
     res.status(400).send({ error: err.message });
   }
