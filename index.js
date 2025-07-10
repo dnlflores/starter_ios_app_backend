@@ -214,10 +214,13 @@ app.get('/chats', authenticateToken, async (req, res) => {
         s.last_name AS sender_last_name,
         r.username AS recipient_username,
         r.first_name AS recipient_first_name,
-        r.last_name AS recipient_last_name
+        r.last_name AS recipient_last_name,
+        t.name AS tool_name,
+        t.description AS tool_description
       FROM chats c
       JOIN users s ON c.sender_id = s.id
       JOIN users r ON c.recipient_id = r.id
+      LEFT JOIN tools t ON c.tool_id = t.id
       ORDER BY c.created_at DESC
     `);
     res.send(result.rows);
@@ -238,10 +241,13 @@ app.get('/chats/:id', authenticateToken, async (req, res) => {
         s.last_name AS sender_last_name,
         r.username AS recipient_username,
         r.first_name AS recipient_first_name,
-        r.last_name AS recipient_last_name
+        r.last_name AS recipient_last_name,
+        t.name AS tool_name,
+        t.description AS tool_description
       FROM chats c
       JOIN users s ON c.sender_id = s.id
       JOIN users r ON c.recipient_id = r.id
+      LEFT JOIN tools t ON c.tool_id = t.id
       WHERE c.id = $1
     `, [id]);
     
@@ -255,7 +261,40 @@ app.get('/chats/:id', authenticateToken, async (req, res) => {
   }
 });
 
-// Get conversation between authenticated user and another user
+// Get conversation between authenticated user and another user for a specific tool
+app.get('/chats/conversation/:userId/:toolId', authenticateToken, async (req, res) => {
+  const { userId, toolId } = req.params;
+  const currentUserId = req.user.id;
+  
+  try {
+    const result = await pool.query(`
+      SELECT 
+        c.*,
+        s.username AS sender_username,
+        s.first_name AS sender_first_name,
+        s.last_name AS sender_last_name,
+        r.username AS recipient_username,
+        r.first_name AS recipient_first_name,
+        r.last_name AS recipient_last_name,
+        t.name AS tool_name,
+        t.description AS tool_description
+      FROM chats c
+      JOIN users s ON c.sender_id = s.id
+      JOIN users r ON c.recipient_id = r.id
+      LEFT JOIN tools t ON c.tool_id = t.id
+      WHERE ((c.sender_id = $1 AND c.recipient_id = $2) 
+         OR (c.sender_id = $2 AND c.recipient_id = $1))
+         AND c.tool_id = $3
+      ORDER BY c.created_at ASC
+    `, [currentUserId, userId, toolId]);
+    
+    res.send(result.rows);
+  } catch (err) {
+    res.status(500).send({ error: err.message });
+  }
+});
+
+// Get conversation between authenticated user and another user (legacy endpoint for backward compatibility)
 app.get('/chats/conversation/:userId', authenticateToken, async (req, res) => {
   const { userId } = req.params;
   const currentUserId = req.user.id;
@@ -269,10 +308,13 @@ app.get('/chats/conversation/:userId', authenticateToken, async (req, res) => {
         s.last_name AS sender_last_name,
         r.username AS recipient_username,
         r.first_name AS recipient_first_name,
-        r.last_name AS recipient_last_name
+        r.last_name AS recipient_last_name,
+        t.name AS tool_name,
+        t.description AS tool_description
       FROM chats c
       JOIN users s ON c.sender_id = s.id
       JOIN users r ON c.recipient_id = r.id
+      LEFT JOIN tools t ON c.tool_id = t.id
       WHERE (c.sender_id = $1 AND c.recipient_id = $2) 
          OR (c.sender_id = $2 AND c.recipient_id = $1)
       ORDER BY c.created_at ASC
@@ -307,12 +349,16 @@ app.get('/chats/conversations', authenticateToken, async (req, res) => {
           WHEN c.sender_id = $1 THEN r.last_name
           ELSE s.last_name
         END AS other_user_last_name,
+        c.tool_id,
+        t.name AS tool_name,
+        t.description AS tool_description,
         MAX(c.created_at) AS last_message_time
       FROM chats c
       JOIN users s ON c.sender_id = s.id
       JOIN users r ON c.recipient_id = r.id
+      LEFT JOIN tools t ON c.tool_id = t.id
       WHERE c.sender_id = $1 OR c.recipient_id = $1
-      GROUP BY other_user_id, other_user_username, other_user_first_name, other_user_last_name
+      GROUP BY other_user_id, other_user_username, other_user_first_name, other_user_last_name, c.tool_id, t.name, t.description
       ORDER BY last_message_time DESC
     `, [currentUserId]);
     
@@ -324,13 +370,13 @@ app.get('/chats/conversations', authenticateToken, async (req, res) => {
 
 // Create a new chat message
 app.post('/chats', authenticateToken, async (req, res) => {
-  const { recipient_id, message, image_url } = req.body;
+  const { recipient_id, message, image_url, tool_id } = req.body;
   const sender_id = req.user.id;
   
   try {
     const result = await pool.query(
-      'INSERT INTO chats (sender_id, recipient_id, message, image_url) VALUES ($1, $2, $3, $4) RETURNING *',
-      [sender_id, recipient_id, message, image_url]
+      'INSERT INTO chats (sender_id, recipient_id, message, image_url, tool_id) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+      [sender_id, recipient_id, message, image_url, tool_id]
     );
     
     const newMessage = result.rows[0];

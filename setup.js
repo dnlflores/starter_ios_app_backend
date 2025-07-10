@@ -60,6 +60,7 @@ async function setup() {
         id SERIAL PRIMARY KEY,
         sender_id INTEGER REFERENCES users(id) NOT NULL,
         recipient_id INTEGER REFERENCES users(id) NOT NULL,
+        tool_id INTEGER REFERENCES tools(id),
         message TEXT NOT NULL,
         image_url TEXT,
         is_edited BOOLEAN DEFAULT FALSE,
@@ -67,6 +68,11 @@ async function setup() {
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         edited_at TIMESTAMP
       );
+    `);
+    
+    // Add tool_id column to existing chats table if it doesn't exist
+    await pool.query(`
+      ALTER TABLE chats ADD COLUMN IF NOT EXISTS tool_id INTEGER REFERENCES tools(id);
     `);
     console.log('Chats table created successfully');
 
@@ -81,6 +87,18 @@ async function setup() {
     await pool.query(`
       CREATE INDEX IF NOT EXISTS idx_chats_users 
       ON chats(sender_id, recipient_id);
+    `);
+    
+    // Create index for tool-specific conversations
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_chats_tool_conversation 
+      ON chats(sender_id, recipient_id, tool_id, created_at);
+    `);
+    
+    // Create index for tool-specific queries
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_chats_tool 
+      ON chats(tool_id);
     `);
     console.log('Chats indexes created successfully');
 
