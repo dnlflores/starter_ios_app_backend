@@ -3,7 +3,9 @@ import cors from 'cors';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { Pool } from 'pg';
+import { createServer } from 'http';
 import pushService from './push-service.js';
+import websocketService from './websocket-service.js';
 
 const app = express();
 app.use(cors());
@@ -333,6 +335,9 @@ app.post('/chats', authenticateToken, async (req, res) => {
     
     const newMessage = result.rows[0];
     
+    // Broadcast the new message via WebSocket for real-time updates
+    websocketService.broadcastNewMessage(newMessage);
+    
     // Send push notification to recipient (async, don't wait for it)
     pushService.sendChatNotification(
       sender_id,
@@ -391,4 +396,24 @@ app.delete('/chats/:id', authenticateToken, async (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+// Create HTTP server
+const server = createServer(app);
+
+// Initialize WebSocket service
+websocketService.init(server);
+
+// Add endpoint to check online status
+app.get('/users/online', authenticateToken, async (req, res) => {
+  try {
+    const onlineUsers = websocketService.getOnlineUsers();
+    res.send({ online_users: onlineUsers });
+  } catch (err) {
+    res.status(500).send({ error: err.message });
+  }
+});
+
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+  console.log(`WebSocket server available at ws://localhost:${PORT}/ws`);
+});

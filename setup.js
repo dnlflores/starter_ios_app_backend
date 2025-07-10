@@ -54,12 +54,9 @@ async function setup() {
     // Table for storing chat messages between sellers and buyers
     console.log('Creating chats table...');
     
-    // Drop the existing chats table if it exists to ensure we have the correct structure
-    await pool.query(`DROP TABLE IF EXISTS chats;`);
-    
-    // Create the new chats table with the correct structure
+    // Create the chats table with the correct structure (preserving existing data)
     await pool.query(`
-      CREATE TABLE chats (
+      CREATE TABLE IF NOT EXISTS chats (
         id SERIAL PRIMARY KEY,
         sender_id INTEGER REFERENCES users(id) NOT NULL,
         recipient_id INTEGER REFERENCES users(id) NOT NULL,
