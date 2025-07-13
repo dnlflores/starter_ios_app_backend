@@ -1,5 +1,5 @@
 import { setup } from './setup.js';
-import { seed } from './seed_tools.js';
+import { seed, clearAndReseedTools } from './seed_tools.js';
 
 async function initializeDatabase() {
   try {
@@ -16,12 +16,15 @@ async function initializeDatabase() {
     console.log('📋 Setting up database tables...');
     await setup();
     
-    // Then, seed with sample data (only if not in production or if explicitly requested)
-    if (process.env.SEED_DATABASE === 'true' || process.env.NODE_ENV !== 'production') {
-      console.log('🌱 Seeding database with sample data...');
-      await seed();
+    // Always seed with sample data in production and development
+    console.log('🌱 Seeding database with sample data...');
+    if (process.env.NODE_ENV === 'production' || process.env.RESET_TOOLS === 'true') {
+      // In production or when explicitly requested, clear existing tools and reseed
+      console.log('🔄 Clearing existing tools and reseeding with fresh data...');
+      await clearAndReseedTools();
     } else {
-      console.log('⏭️  Skipping database seeding in production (set SEED_DATABASE=true to enable)');
+      // In development, use normal seeding (preserves existing data)
+      await seed();
     }
     
     console.log('✅ Database initialization completed successfully!');

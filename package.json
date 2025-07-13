@@ -8,6 +8,7 @@
     "dev": "node index.js",
     "setup": "node setup.js",
     "seed": "node seed_tools.js",
+    "reset-tools": "RESET_TOOLS=true node init-db.js",
     "init-db": "node init-db.js"
   },
   "keywords": [],
