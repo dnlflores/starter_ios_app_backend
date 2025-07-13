@@ -224,12 +224,14 @@ async function seedTools() {
       }
     ];
 
-    // Insert tools (assign to first user - Daniel)
-    for (const tool of tools) {
+    // Insert tools (assign alternately to users 1 and 45)
+    for (let i = 0; i < tools.length; i++) {
+      const tool = tools[i];
+      const ownerId = i % 2 === 0 ? 1 : 45; // Alternate between user 1 and 45
       await pool.query(
         `INSERT INTO tools (name, price, description, owner_id, image_url, is_available, latitude, longitude) 
          VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
-        [tool.name, tool.price, tool.description, 1, tool.image_url, tool.is_available, tool.latitude, tool.longitude]
+        [tool.name, tool.price, tool.description, ownerId, tool.image_url, tool.is_available, tool.latitude, tool.longitude]
       );
     }
 
