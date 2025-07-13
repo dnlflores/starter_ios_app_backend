@@ -11,15 +11,21 @@ const pool = new Pool({
 // Function to clear existing tools and reseed with fresh data
 async function clearAndReseedTools() {
   try {
-    console.log('🗑️  Clearing existing tools data...');
+    console.log('🗑️  Clearing existing tools and chats data...');
+    
+    // Delete all existing chats first (since they reference tools)
+    await pool.query('DELETE FROM chats');
+    console.log('✅ Chats data cleared successfully');
     
     // Delete all existing tools
     await pool.query('DELETE FROM tools');
-    
-    // Reset the sequence for tool IDs
-    await pool.query('ALTER SEQUENCE tools_id_seq RESTART WITH 1');
-    
     console.log('✅ Tools data cleared successfully');
+    
+    // Reset the sequences for both tables
+    await pool.query('ALTER SEQUENCE tools_id_seq RESTART WITH 1');
+    await pool.query('ALTER SEQUENCE chats_id_seq RESTART WITH 1');
+    
+    console.log('✅ Database sequences reset successfully');
     
     // Now reseed with fresh data
     await seedTools();
