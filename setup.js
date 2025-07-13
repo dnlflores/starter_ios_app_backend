@@ -66,7 +66,6 @@ async function setup() {
         is_edited BOOLEAN DEFAULT FALSE,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        edited_at TIMESTAMP
       );
     `);
     
