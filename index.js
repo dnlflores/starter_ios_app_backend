@@ -4,12 +4,56 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { Pool } from 'pg';
 import { createServer } from 'http';
+import multer from 'multer';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import fs from 'fs';
 import pushService from './push-service.js';
 import websocketService from './websocket-service.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// Serve static files (uploaded images)
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Create uploads directory if it doesn't exist
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+// Configure multer for file uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, uploadsDir);
+  },
+  filename: (req, file, cb) => {
+    // Generate unique filename
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    const fileExtension = path.extname(file.originalname);
+    cb(null, `${uniqueSuffix}${fileExtension}`);
+  }
+});
+
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 5 * 1024 * 1024 // 5MB limit
+  },
+  fileFilter: (req, file, cb) => {
+    // Only allow image files
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files are allowed!'), false);
+    }
+  }
+});
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -115,6 +159,27 @@ app.post('/test-notification', authenticateToken, async (req, res) => {
   }
 });
 
+// Image upload endpoint
+app.post('/upload-image', authenticateToken, upload.single('image'), (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'No image file provided' });
+    }
+
+    // Return the image URL that can be used in the frontend
+    const imageUrl = `https://starter-ios-app-backend.onrender.com/uploads/${req.file.filename}`;
+    
+    res.json({ 
+      success: true, 
+      imageUrl: imageUrl,
+      fileName: req.file.filename 
+    });
+  } catch (error) {
+    console.error('Error uploading image:', error);
+    res.status(500).json({ error: 'Failed to upload image' });
+  }
+});
+
 // List all tools
 app.get('/tools', async (req, res) => {
   try {
@@ -158,12 +223,19 @@ app.get('/tools/:id', async (req, res) => {
 });
 
 // Create a new tool
-app.post('/tools', authenticateToken, async (req, res) => {
+app.post('/tools', authenticateToken, upload.single('image'), async (req, res) => {
   const { name, price, description, owner_id, created_at } = req.body;
+  let imageUrl = null;
+  
+  // If an image was uploaded, set the image URL
+  if (req.file) {
+    imageUrl = `https://starter-ios-app-backend.onrender.com/uploads/${req.file.filename}`;
+  }
+  
   try {
     const result = await pool.query(
-      'INSERT INTO tools (name, price, description, owner_id, created_at) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-      [name, price, description, owner_id, created_at]
+      'INSERT INTO tools (name, price, description, owner_id, created_at, image_url) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+      [name, price, description, owner_id, created_at, imageUrl]
     );
     res.status(201).send(result.rows[0]);
   } catch (err) {
@@ -369,14 +441,20 @@ app.get('/chats/conversations', authenticateToken, async (req, res) => {
 });
 
 // Create a new chat message
-app.post('/chats', authenticateToken, async (req, res) => {
-  const { recipient_id, message, image_url, tool_id } = req.body;
+app.post('/chats', authenticateToken, upload.single('image'), async (req, res) => {
+  const { recipient_id, message, tool_id } = req.body;
   const sender_id = req.user.id;
+  let imageUrl = null;
+  
+  // If an image was uploaded, set the image URL
+  if (req.file) {
+    imageUrl = `https://starter-ios-app-backend.onrender.com/uploads/${req.file.filename}`;
+  }
   
   try {
     const result = await pool.query(
       'INSERT INTO chats (sender_id, recipient_id, message, image_url, tool_id) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-      [sender_id, recipient_id, message, image_url, tool_id]
+      [sender_id, recipient_id, message, imageUrl, tool_id]
     );
     
     const newMessage = result.rows[0];
@@ -388,7 +466,7 @@ app.post('/chats', authenticateToken, async (req, res) => {
     pushService.sendChatNotification(
       sender_id,
       recipient_id,
-      message,
+      message || 'Sent an image',
       newMessage.id
     ).catch(err => {
       console.error('Failed to send push notification:', err);
