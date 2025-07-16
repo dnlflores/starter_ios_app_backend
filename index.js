@@ -224,18 +224,27 @@ app.get('/tools/:id', async (req, res) => {
 
 // Create a new tool
 app.post('/tools', authenticateToken, upload.single('image'), async (req, res) => {
-  const { name, price, description, owner_id, created_at } = req.body;
+  const { name, price, description, owner_id, created_at, latitude, longitude } = req.body;
   let imageUrl = null;
   
   // If an image was uploaded, set the image URL
   if (req.file) {
     imageUrl = `https://starter-ios-app-backend.onrender.com/uploads/${req.file.filename}`;
   }
+  console.log(`starting to create tool: ${name} ${price} ${description} ${owner_id} ${created_at} ${latitude} ${longitude}`)
+  
+  // Parse and format price to one decimal place
+  const formattedPrice = price ? parseFloat(price).toFixed(1) : null;
+  
+  // Parse coordinates
+  const lat = latitude ? parseFloat(latitude) : null;
+  const lng = longitude ? parseFloat(longitude) : null;
+  console.log(`parsed coordinates: ${lat} ${lng}`)
   
   try {
     const result = await pool.query(
-      'INSERT INTO tools (name, price, description, owner_id, created_at, image_url) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
-      [name, price, description, owner_id, created_at, imageUrl]
+      'INSERT INTO tools (name, price, description, owner_id, created_at, image_url, latitude, longitude) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *',
+      [name, formattedPrice, description, owner_id, created_at, imageUrl, lat, lng]
     );
     res.status(201).send(result.rows[0]);
   } catch (err) {
