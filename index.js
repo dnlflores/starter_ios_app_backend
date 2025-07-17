@@ -255,15 +255,24 @@ app.post('/tools', authenticateToken, upload.single('image'), async (req, res) =
 // Update an existing tool
 app.put('/tools/:id', authenticateToken, async (req, res) => {
   const { id } = req.params;
-  const { name, price, description, owner_id } = req.body;
+  const { name, price, description } = req.body;
+  const userId = req.user.id;
+  
   try {
-    const result = await pool.query(
-      'UPDATE tools SET name = $1, price = $2, description = $3, owner_id = $4 WHERE id = $5 RETURNING *',
-      [name, price, description, owner_id, id]
-    );
-    if (!result.rows.length) {
-      return res.status(404).send({ error: 'Tool not found' });
+    // Check if the tool exists and belongs to the authenticated user
+    const checkResult = await pool.query('SELECT * FROM tools WHERE id = $1 AND owner_id = $2', [id, userId]);
+    if (!checkResult.rows.length) {
+      return res.status(404).send({ error: 'Tool not found or you are not authorized to edit it' });
     }
+    
+    // Parse and format price to one decimal place
+    const formattedPrice = price ? parseFloat(price).toFixed(1) : null;
+    
+    const result = await pool.query(
+      'UPDATE tools SET name = $1, price = $2, description = $3, updated_at = CURRENT_TIMESTAMP WHERE id = $4 RETURNING *',
+      [name, formattedPrice, description, id]
+    );
+    
     res.send(result.rows[0]);
   } catch (err) {
     res.status(400).send({ error: err.message });
@@ -273,10 +282,13 @@ app.put('/tools/:id', authenticateToken, async (req, res) => {
 // Delete a tool
 app.delete('/tools/:id', authenticateToken, async (req, res) => {
   const { id } = req.params;
+  const userId = req.user.id;
+  
   try {
-    const result = await pool.query('DELETE FROM tools WHERE id = $1', [id]);
+    // Check if the tool exists and belongs to the authenticated user before deleting
+    const result = await pool.query('DELETE FROM tools WHERE id = $1 AND owner_id = $2', [id, userId]);
     if (result.rowCount === 0) {
-      return res.status(404).send({ error: 'Tool not found' });
+      return res.status(404).send({ error: 'Tool not found or you are not authorized to delete it' });
     }
     res.status(204).send();
   } catch (err) {
