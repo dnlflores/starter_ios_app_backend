@@ -253,10 +253,11 @@ app.post('/tools', authenticateToken, upload.single('image'), async (req, res) =
 });
 
 // Update an existing tool
-app.put('/tools/:id', authenticateToken, async (req, res) => {
+app.put('/tools/:id', authenticateToken, upload.single('image'), async (req, res) => {
   const { id } = req.params;
-  const { name, price, description } = req.body;
+  const { name, price, description, latitude, longitude } = req.body;
   const userId = req.user.id;
+  let imageUrl = null;
   
   try {
     // Check if the tool exists and belongs to the authenticated user
@@ -265,16 +266,66 @@ app.put('/tools/:id', authenticateToken, async (req, res) => {
       return res.status(404).send({ error: 'Tool not found or you are not authorized to edit it' });
     }
     
+    // If an image was uploaded, set the image URL
+    if (req.file) {
+      imageUrl = `https://starter-ios-app-backend.onrender.com/uploads/${req.file.filename}`;
+    }
+    
+    console.log(`updating tool: ${name} ${price} ${description} ${latitude} ${longitude}`);
+    
     // Parse and format price to one decimal place
     const formattedPrice = price ? parseFloat(price).toFixed(1) : null;
     
-    const result = await pool.query(
-      'UPDATE tools SET name = $1, price = $2, description = $3, updated_at = CURRENT_TIMESTAMP WHERE id = $4 RETURNING *',
-      [name, formattedPrice, description, id]
-    );
+    // Parse coordinates
+    const lat = latitude ? parseFloat(latitude) : null;
+    const lng = longitude ? parseFloat(longitude) : null;
+    console.log(`parsed coordinates: ${lat} ${lng}`);
+    
+    // Build update query dynamically based on what fields are being updated
+    let updateFields = [];
+    let values = [];
+    let paramCount = 1;
+    
+    if (name !== undefined) {
+      updateFields.push(`name = $${paramCount++}`);
+      values.push(name);
+    }
+    if (formattedPrice !== undefined) {
+      updateFields.push(`price = $${paramCount++}`);
+      values.push(formattedPrice);
+    }
+    if (description !== undefined) {
+      updateFields.push(`description = $${paramCount++}`);
+      values.push(description);
+    }
+    if (imageUrl) {
+      updateFields.push(`image_url = $${paramCount++}`);
+      values.push(imageUrl);
+    }
+    if (lat !== undefined && lat !== null) {
+      updateFields.push(`latitude = $${paramCount++}`);
+      values.push(lat);
+    }
+    if (lng !== undefined && lng !== null) {
+      updateFields.push(`longitude = $${paramCount++}`);
+      values.push(lng);
+    }
+    
+    // Always update the timestamp
+    updateFields.push(`updated_at = CURRENT_TIMESTAMP`);
+    
+    // Add the ID parameter at the end
+    values.push(id);
+    
+    const query = `UPDATE tools SET ${updateFields.join(', ')} WHERE id = $${paramCount} RETURNING *`;
+    console.log('Update query:', query);
+    console.log('Values:', values);
+    
+    const result = await pool.query(query, values);
     
     res.send(result.rows[0]);
   } catch (err) {
+    console.error('Error updating tool:', err);
     res.status(400).send({ error: err.message });
   }
 });
