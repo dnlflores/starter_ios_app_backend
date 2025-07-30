@@ -225,11 +225,12 @@ async function seedTools() {
     ];
 
     // Insert tools (assign to first user - Daniel)
-    for (const tool of tools) {
+    for (const i = 0; i < tools.length; i++) {
+      const tool = tools[i];
       await pool.query(
         `INSERT INTO tools (name, price, description, owner_id, image_url, is_available, latitude, longitude) 
          VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
-        [tool.name, tool.price, tool.description, 1, tool.image_url, tool.is_available, tool.latitude, tool.longitude]
+        [tool.name, tool.price, tool.description, i % 2 + 1, tool.image_url, tool.is_available, tool.latitude, tool.longitude]
       );
     }
 
@@ -309,6 +310,7 @@ async function seed() {
     ];
 
     // Insert users
+    console.log('Seeding users...');
     for (const user of users) {
       const hash = await bcrypt.hash(user.password, 10);
       await pool.query(
@@ -318,9 +320,12 @@ async function seed() {
         [user.username, hash, user.email, user.first_name, user.last_name, user.phone, user.address, user.city, user.state, user.zip]
       );
     }
+    console.log('✅ Users seeded successfully');
 
     // Seed tools with enhanced descriptions
+    console.log('Seeding tools...');
     await seedTools();
+    console.log('✅ Tools seeded successfully');
 
     console.log('Database seeded successfully');
     return true;

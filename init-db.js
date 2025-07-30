@@ -21,6 +21,7 @@ async function initializeDatabase() {
     if (process.env.SEED_DATABASE === 'true') {
       // In production or when explicitly requested, clear existing tools and reseed
       console.log('🔄 Clearing existing tools and reseeding with fresh data...');
+      await seed();
       await clearAndReseedTools();
     }
     
