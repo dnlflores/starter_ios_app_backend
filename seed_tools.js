@@ -225,7 +225,7 @@ async function seedTools() {
     ];
 
     // Insert tools (assign to first user - Daniel)
-    for (const i = 0; i < tools.length; i++) {
+    for (let i = 0; i < tools.length; i++) {
       const tool = tools[i];
       await pool.query(
         `INSERT INTO tools (name, price, description, owner_id, image_url, is_available, latitude, longitude) 
