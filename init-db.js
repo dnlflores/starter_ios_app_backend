@@ -18,7 +18,7 @@ async function initializeDatabase() {
     
     // Always seed with sample data in production and development
     console.log('🌱 Seeding database with sample data...');
-    if (process.env.RESET_TOOLS === 'true') {
+    if (process.env.SEED_DATABASE === 'true') {
       // In production or when explicitly requested, clear existing tools and reseed
       console.log('🔄 Clearing existing tools and reseeding with fresh data...');
       await clearAndReseedTools();
