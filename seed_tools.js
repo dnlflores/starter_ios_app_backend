@@ -46,7 +46,7 @@ async function seedTools() {
         name: 'Professional Claw Hammer', 
         price: 25, 
         description: 'Professional-grade 16oz claw hammer with ergonomic fiberglass handle and balanced weight distribution. Features a forged steel head with precision-machined striking surface for consistent nail driving. The curved claw provides excellent leverage for nail removal. Anti-slip grip handle reduces hand fatigue during extended use. Perfect for framing, general construction, and home improvement projects. Meets ANSI safety standards.', 
-        image_url: 'https://via.placeholder.com/300x200/4f46e5/ffffff?text=Hammer', 
+        image_url: 'https://images.unsplash.com/photo-1609010697446-11f2155278f0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80', 
         is_available: true, 
         latitude: 30.2672, 
         longitude: -97.7431 
@@ -55,7 +55,7 @@ async function seedTools() {
         name: 'Precision Flathead Screwdriver', 
         price: 10, 
         description: 'High-quality 6-inch flathead screwdriver with chrome-vanadium steel blade for superior strength and durability. Features a precision-ground tip that resists cam-out and provides excellent torque transfer. The ergonomic handle with textured grip ensures comfortable use even in wet conditions. Magnetic tip holds screws securely during installation. Ideal for electronics, furniture assembly, and precision work. Blade width: 6mm. Handle includes hanging hole for organized storage.', 
-        image_url: 'https://via.placeholder.com/300x200/4f46e5/ffffff?text=Screwdriver', 
+        image_url: 'https://images.unsplash.com/photo-1530479214162-5e8f24983ba2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80', 
         is_available: true, 
         latitude: 30.2676, 
         longitude: -97.7435 
@@ -64,7 +64,7 @@ async function seedTools() {
         name: 'Adjustable Crescent Wrench', 
         price: 15, 
         description: 'Heavy-duty 10-inch adjustable wrench with smooth jaw action and precise calibration. Forged chrome-vanadium steel construction ensures long-lasting performance under heavy use. The jaw opens to 1-1/4 inches and features laser-etched measurement markings for quick size reference. Comfortable cushioned grip handle reduces hand fatigue. Ideal for plumbing, automotive work, and general maintenance. The angled head design provides better access in tight spaces. Meets professional contractor standards.', 
-        image_url: 'https://via.placeholder.com/300x200/4f46e5/ffffff?text=Wrench', 
+        image_url: 'https://images.unsplash.com/photo-1609010697628-f8b3e8b5e8f0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80', 
         is_available: true, 
         latitude: 30.2680, 
         longitude: -97.7439 
@@ -73,7 +73,7 @@ async function seedTools() {
         name: 'Professional Needle Nose Pliers', 
         price: 12, 
         description: 'Premium 8-inch needle nose pliers with precision-machined jaws and spring-loaded handles. Features hardened steel construction with corrosion-resistant finish. The long, tapered jaws provide excellent reach into tight spaces while maintaining strong gripping power. Built-in wire cutting edges handle up to 12 AWG wire. Ergonomic handles with non-slip grip coating reduce hand fatigue. Perfect for electrical work, jewelry making, and precision assembly tasks. Includes integrated wire stripping notches.', 
-        image_url: 'https://via.placeholder.com/300x200/4f46e5/ffffff?text=Pliers', 
+        image_url: 'https://images.unsplash.com/photo-1609010698256-88f1b6fd66e7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80', 
         is_available: true, 
         latitude: 30.2684, 
         longitude: -97.7443 
@@ -82,7 +82,7 @@ async function seedTools() {
         name: 'Professional Hand Saw', 
         price: 20, 
         description: 'Professional-grade 20-inch crosscut hand saw with aggressive tooth geometry for fast, clean cuts through hardwood and softwood. Features a tempered steel blade with precision-set teeth that maintain sharpness longer. The ergonomic wooden handle provides comfortable grip and excellent control. Blade thickness: 0.042 inches for reduced binding. 8 TPI (teeth per inch) configuration ideal for general woodworking. Includes protective blade guard. Perfect for trim carpentry, furniture building, and precision woodworking projects.', 
-        image_url: 'https://via.placeholder.com/300x200/4f46e5/ffffff?text=Saw', 
+        image_url: 'https://images.unsplash.com/photo-1572981779307-38b8cabb2407?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80', 
         is_available: true, 
         latitude: 30.2688, 
         longitude: -97.7447 
@@ -91,7 +91,7 @@ async function seedTools() {
         name: 'Cordless Power Drill Kit', 
         price: 80, 
         description: 'Professional 20V MAX cordless drill/driver kit with brushless motor technology for 50% longer runtime. Includes 1/2-inch single-sleeve ratcheting chuck for superior bit retention. Variable speed trigger (0-450/0-1,500 RPM) with 15 clutch settings for precise torque control. LED work light illuminates dark work areas. Kit includes: drill, two 20V lithium-ion batteries, fast charger, belt clip, and carrying case. Maximum torque: 300 in-lbs. Perfect for drilling, driving screws, and light-duty fastening applications.', 
-        image_url: 'https://via.placeholder.com/300x200/4f46e5/ffffff?text=Drill', 
+        image_url: 'https://images.unsplash.com/photo-1581244277943-fe4a9c777189?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80', 
         is_available: true, 
         latitude: 30.2692, 
         longitude: -97.7451 
@@ -100,7 +100,7 @@ async function seedTools() {
         name: 'Electric Orbital Sander', 
         price: 45, 
         description: 'Professional-grade 2.4-amp electric orbital sander with 14,000 OPM for fast material removal and smooth finishing. Features a 1/4-sheet sanding pad with efficient dust collection system and micro-filtration. The sealed switch prevents dust contamination for longer tool life. Ergonomic design with soft-grip surfaces reduces vibration and user fatigue. Includes dust collection bag and assorted sandpaper grits (80, 120, 220). Perfect for surface preparation, paint removal, and fine finishing work on wood, metal, and plastic surfaces.', 
-        image_url: 'https://via.placeholder.com/300x200/4f46e5/ffffff?text=Sander', 
+        image_url: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80', 
         is_available: true, 
         latitude: 30.2696, 
         longitude: -97.7455 
@@ -109,7 +109,7 @@ async function seedTools() {
         name: 'Wood Chisel Set', 
         price: 18, 
         description: 'Professional 6-piece wood chisel set with high-carbon steel blades for exceptional edge retention. Set includes sizes: 1/4", 3/8", 1/2", 3/4", 1", and 1-1/4". Each chisel features a precision-ground bevel and polished blade for smooth cutting action. Durable hardwood handles with brass ferrules resist splitting under mallet strikes. Includes protective plastic edge guards for safe storage. Perfect for mortising, paring, and detailed woodworking. Blades are honed and ready to use. Comes with storage roll for organized transport.', 
-        image_url: 'https://via.placeholder.com/300x200/4f46e5/ffffff?text=Chisel', 
+        image_url: 'https://images.unsplash.com/photo-1609010698135-9b0e9f50c2fb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80', 
         is_available: true, 
         latitude: 30.2700, 
         longitude: -97.7459 
@@ -118,7 +118,7 @@ async function seedTools() {
         name: 'Professional Tape Measure', 
         price: 8, 
         description: 'Heavy-duty 25-foot tape measure with standout up to 7 feet for one-person measuring. Features a durable nylon-coated steel blade with clear, easy-to-read markings in both imperial and metric units. The True Zero end hook moves in and out for inside and outside measurements. Cushioned case design withstands 10-foot drops. Belt clip attachment for convenient carrying. Blade width: 1 inch. Includes fraction markings down to 1/16 inch for precise measurements. Perfect for construction, home improvement, and professional contracting work.', 
-        image_url: 'https://via.placeholder.com/300x200/4f46e5/ffffff?text=Tape+Measure', 
+        image_url: 'https://images.unsplash.com/photo-1609010698012-8932b8b4d5b3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80', 
         is_available: true, 
         latitude: 30.2704, 
         longitude: -97.7463 
@@ -127,7 +127,7 @@ async function seedTools() {
         name: 'Professional Bubble Level', 
         price: 14, 
         description: 'Precision-crafted 24-inch aluminum level with three high-accuracy bubble vials for level, plumb, and 45-degree measurements. Features a durable extruded aluminum frame with protective end caps. The milled working surfaces ensure accuracy within 1/32 inch over 72 inches. High-visibility bubble vials with permanent luminescent rings for easy reading in low light. Magnetic base strip holds level securely to metal surfaces. Perfect for construction, carpentry, and installation work. Includes convenient carrying handle and storage hooks.', 
-        image_url: 'https://via.placeholder.com/300x200/4f46e5/ffffff?text=Level', 
+        image_url: 'https://images.unsplash.com/photo-1504148455328-c376907d081c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80', 
         is_available: true, 
         latitude: 30.2708, 
         longitude: -97.7467 
@@ -136,7 +136,7 @@ async function seedTools() {
         name: 'Retractable Utility Knife', 
         price: 9, 
         description: 'Professional-grade utility knife with quick-change blade mechanism and secure blade storage. Features a durable metal construction with rubber-grip handle for comfortable use. The blade retracts completely for safe storage and transport. Includes 5 premium carbon steel blades that stay sharp longer. Blade depth adjustment for different material thicknesses. Built-in blade snapper for creating fresh cutting edges. Perfect for cardboard, drywall, carpet, and general cutting tasks. Includes lanyard hole for tethering in professional environments.', 
-        image_url: 'https://via.placeholder.com/300x200/4f46e5/ffffff?text=Utility+Knife', 
+        image_url: 'https://images.unsplash.com/photo-1609010698456-b9a9a7b3a9c8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80', 
         is_available: true, 
         latitude: 30.2712, 
         longitude: -97.7471 
@@ -145,7 +145,7 @@ async function seedTools() {
         name: 'LED Work Flashlight', 
         price: 16, 
         description: 'Professional-grade LED work flashlight with 800-lumen output and 4-hour runtime. Features a durable aluminum construction with impact-resistant design rated for 6-foot drops. The focusing lens adjusts from wide floodlight to focused spotlight beam. Includes magnetic base and 180-degree rotating clip for hands-free operation. Water-resistant IPX4 rating for outdoor use. Uses 3 AA batteries (included). Multiple modes: high, medium, low, and strobe. Perfect for automotive work, electrical tasks, and emergency situations. Includes wrist strap for secure carrying.', 
-        image_url: 'https://via.placeholder.com/300x200/4f46e5/ffffff?text=Flashlight', 
+        image_url: 'https://images.unsplash.com/photo-1609010697012-8901b9e2b8f3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80', 
         is_available: true, 
         latitude: 30.2716, 
         longitude: -97.7475 
@@ -154,7 +154,7 @@ async function seedTools() {
         name: 'Aluminum Step Ladder', 
         price: 120, 
         description: 'Professional-grade 6-foot aluminum step ladder with 250-pound weight capacity. Features wide, slip-resistant steps with deep grooves for secure footing. The heavy-duty hinges with pin locks provide stability and safety. Includes a large top platform (12" x 16") with tool tray for convenient tool storage. Lightweight aluminum construction (only 18 lbs) with weather-resistant finish. Spreader bars lock automatically when opened. Meets OSHA and ANSI safety standards. Perfect for painting, electrical work, and general maintenance tasks. Folds flat for compact storage.', 
-        image_url: 'https://via.placeholder.com/300x200/4f46e5/ffffff?text=Ladder', 
+        image_url: 'https://images.unsplash.com/photo-1609010697890-abc123def456?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80', 
         is_available: true, 
         latitude: 30.2720, 
         longitude: -97.7479 
@@ -163,7 +163,7 @@ async function seedTools() {
         name: 'Heavy-Duty Crowbar', 
         price: 22, 
         description: 'Professional 24-inch crowbar forged from high-carbon steel for maximum strength and durability. Features a precision-ground chisel end and curved claw for versatile prying, pulling, and demolition work. The hexagonal shaft design provides better grip and prevents rolling. Heat-treated construction resists bending and breaking under heavy loads. Painted finish resists corrosion and improves visibility. Weight: 3.5 pounds for optimal leverage. Perfect for demolition, nail pulling, board removal, and general construction tasks. Includes hanging hole for organized storage.', 
-        image_url: 'https://via.placeholder.com/300x200/4f46e5/ffffff?text=Crowbar', 
+        image_url: 'https://images.unsplash.com/photo-1609010698789-def456ghi789?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80', 
         is_available: true, 
         latitude: 30.2724, 
         longitude: -97.7483 
@@ -172,7 +172,7 @@ async function seedTools() {
         name: 'Professional Socket Set', 
         price: 55, 
         description: 'Comprehensive 42-piece metric socket set with 1/4" and 3/8" drive ratchets. Includes sockets ranging from 4mm to 19mm in both standard and deep-well configurations. Features premium chrome-vanadium steel construction with mirror-chrome finish for corrosion resistance. The 72-tooth ratchets provide 5-degree swing arc for work in tight spaces. Includes universal joints, extension bars, and spark plug socket. Organized in a durable blow-molded case with clearly marked size indicators. Perfect for automotive, motorcycle, and general mechanical work.', 
-        image_url: 'https://via.placeholder.com/300x200/4f46e5/ffffff?text=Socket+Set', 
+        image_url: 'https://images.unsplash.com/photo-1581244277943-fe4a9c777189?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80', 
         is_available: true, 
         latitude: 30.2728, 
         longitude: -97.7487 
@@ -181,7 +181,7 @@ async function seedTools() {
         name: 'Advanced Stud Finder', 
         price: 30, 
         description: 'Professional-grade electronic stud finder with advanced edge-finding technology and deep scan capability. Locates wood and metal studs up to 1.5 inches deep with ±1/8 inch accuracy. Features a large LCD display with audible and visual alerts. Includes wire warning detection to avoid electrical hazards. Auto-calibration ensures consistent performance on different wall textures. The pivoting head maintains contact with wall surfaces for accurate readings. Battery life indicator and auto-shutoff preserve battery. Perfect for drywall installation, picture hanging, and wall mounting projects.', 
-        image_url: 'https://via.placeholder.com/300x200/4f46e5/ffffff?text=Stud+Finder', 
+        image_url: 'https://images.unsplash.com/photo-1609010698321-abc987def654?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80', 
         is_available: true, 
         latitude: 30.2732, 
         longitude: -97.7491 
@@ -190,7 +190,7 @@ async function seedTools() {
         name: 'Automatic Wire Stripper', 
         price: 13, 
         description: 'Professional automatic wire stripper with self-adjusting jaw mechanism that accommodates 10-22 AWG solid and stranded wire. Features precision-ground stripping blades that cut insulation without damaging the conductor. The ergonomic handles with spring-loaded action reduce hand fatigue during repetitive use. Includes built-in wire cutters and loop-making holes. The yellow finish provides high visibility in toolboxes. Calibrated for standard wire gauges with clear markings. Perfect for electrical work, electronics, and automotive applications. Meets professional electrician standards.', 
-        image_url: 'https://via.placeholder.com/300x200/4f46e5/ffffff?text=Wire+Stripper', 
+        image_url: 'https://images.unsplash.com/photo-1609010698654-fed321abc789?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80', 
         is_available: true, 
         latitude: 30.2736, 
         longitude: -97.7495 
@@ -199,7 +199,7 @@ async function seedTools() {
         name: 'Professional Paint Brush', 
         price: 7, 
         description: 'Premium 2-inch angled paint brush with synthetic bristles designed for smooth finish with all paint types. Features a stainless steel ferrule that resists corrosion and maintains bristle alignment. The comfortable wooden handle provides excellent control and balance. Bristles are flagged and tipped for superior paint pickup and smooth application. Perfect for cutting in edges, trim work, and detailed painting. Easy to clean and maintain for long-lasting performance. Suitable for latex, oil-based, and specialty coatings. Includes protective plastic cover for storage.', 
-        image_url: 'https://via.placeholder.com/300x200/4f46e5/ffffff?text=Paint+Brush', 
+        image_url: 'https://images.unsplash.com/photo-1572981779537-b8f8b8b3c0f8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80', 
         is_available: true, 
         latitude: 30.2740, 
         longitude: -97.7499 
@@ -208,7 +208,7 @@ async function seedTools() {
         name: 'Auto-Darkening Welding Mask', 
         price: 65, 
         description: 'Professional auto-darkening welding helmet with large 3.86" x 1.73" viewing area and shade range 4/9-13. Features advanced light sensors that react in 1/25,000 second for optimal eye protection. The lightweight design (1.2 lbs) reduces neck strain during extended use. Adjustable delay and sensitivity controls adapt to different welding conditions. Solar-powered with backup battery for reliable operation. Includes grinding mode for safe metal preparation. Meets ANSI Z87.1 safety standards. Perfect for MIG, TIG, stick welding, and plasma cutting applications.', 
-        image_url: 'https://via.placeholder.com/300x200/4f46e5/ffffff?text=Welding+Mask', 
+        image_url: 'https://images.unsplash.com/photo-1609010698987-ghi456jkl012?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80', 
         is_available: true, 
         latitude: 30.2744, 
         longitude: -97.7503 
@@ -217,7 +217,7 @@ async function seedTools() {
         name: 'Portable Air Compressor', 
         price: 150, 
         description: 'Professional-grade portable air compressor with 6-gallon tank capacity and 150 PSI maximum pressure. Features a 1.5 HP motor with thermal overload protection and oil-free pump for low maintenance. Delivers 2.6 CFM at 90 PSI for powering pneumatic tools. Includes dual universal couplers, pressure regulator, and built-in storage compartment. The heavy-duty steel tank with protective shroud ensures durability. Rubber feet and low-profile design provide stability and portability. Perfect for nail guns, spray painting, tire inflation, and general pneumatic applications. Includes 25-foot recoil hose.', 
-        image_url: 'https://via.placeholder.com/300x200/4f46e5/ffffff?text=Air+Compressor', 
+        image_url: 'https://images.unsplash.com/photo-1609010699123-jkl345mno678?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80', 
         is_available: true, 
         latitude: 30.2748, 
         longitude: -97.7507 
@@ -229,8 +229,7 @@ async function seedTools() {
       const tool = tools[i];
       await pool.query(
         `INSERT INTO tools (name, price, description, owner_id, image_url, is_available, latitude, longitude) 
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-         ON CONFLICT (name) DO NOTHING`,
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
         [tool.name, tool.price, tool.description, (i % 2) + 1, tool.image_url, tool.is_available, tool.latitude, tool.longitude]
       );
     }
