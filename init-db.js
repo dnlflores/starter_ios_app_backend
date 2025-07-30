@@ -22,7 +22,7 @@ async function initializeDatabase() {
       // In production or when explicitly requested, clear existing tools and reseed
       console.log('🔄 Clearing existing tools and reseeding with fresh data...');
       await seed();
-      await clearAndReseedTools();
+      // await clearAndReseedTools();
     }
     
     console.log('✅ Database initialization completed successfully!');

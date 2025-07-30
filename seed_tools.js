@@ -229,8 +229,9 @@ async function seedTools() {
       const tool = tools[i];
       await pool.query(
         `INSERT INTO tools (name, price, description, owner_id, image_url, is_available, latitude, longitude) 
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
-        [tool.name, tool.price, tool.description, i % 2 + 1, tool.image_url, tool.is_available, tool.latitude, tool.longitude]
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+         ON CONFLICT (name) DO NOTHING`,
+        [tool.name, tool.price, tool.description, (i % 2) + 1, tool.image_url, tool.is_available, tool.latitude, tool.longitude]
       );
     }
 
