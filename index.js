@@ -198,7 +198,13 @@ app.get('/tools', async (req, res) => {
 app.get('/tools/name/:name', async (req, res) => {
   const { name } = req.params;
   try {
-    const result = await pool.query('SELECT * FROM tools WHERE name = $1', [name]);
+    const result = await pool.query(
+      `SELECT tools.*, users.username AS owner_username, users.email AS owner_email, users.first_name AS owner_first_name, users.last_name AS owner_last_name, users.phone AS owner_phone, users.address AS owner_address, users.city AS owner_city, users.state AS owner_state, users.zip AS owner_zip
+       FROM tools
+       JOIN users ON tools.owner_id = users.id
+       WHERE tools.name = $1`,
+      [name]
+    );
     if (!result.rows.length) {
       return res.status(404).send({ error: 'Tool not found' });
     }
@@ -212,7 +218,13 @@ app.get('/tools/name/:name', async (req, res) => {
 app.get('/tools/:id', async (req, res) => {
   const { id } = req.params;
   try {
-    const result = await pool.query('SELECT * FROM tools WHERE id = $1', [id]);
+    const result = await pool.query(
+      `SELECT tools.*, users.username AS owner_username, users.email AS owner_email, users.first_name AS owner_first_name, users.last_name AS owner_last_name, users.phone AS owner_phone, users.address AS owner_address, users.city AS owner_city, users.state AS owner_state, users.zip AS owner_zip
+       FROM tools
+       JOIN users ON tools.owner_id = users.id
+       WHERE tools.id = $1`,
+      [id]
+    );
     if (!result.rows.length) {
       return res.status(404).send({ error: 'Tool not found' });
     }
