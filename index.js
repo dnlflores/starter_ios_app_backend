@@ -109,6 +109,22 @@ app.get('/users', authenticateToken, async (req, res) => {
   }
 });
 
+// Get a specific user by ID (for demo purposes, no authentication required)
+app.get('/users/:id', authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await pool.query('SELECT id, username, email, first_name, last_name, phone, address, city, state, zip FROM users WHERE id = $1', [id]);
+    
+    if (result.rows.length === 0) {
+      return res.status(404).send({ error: 'User not found' });
+    }
+    
+    res.send(result.rows[0]);
+  } catch (err) {
+    res.status(500).send({ error: err.message });
+  }
+});
+
 // Device token registration endpoint
 app.post('/device-token', authenticateToken, async (req, res) => {
   const { device_token, platform = 'ios' } = req.body;
