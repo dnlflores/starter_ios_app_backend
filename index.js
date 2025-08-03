@@ -252,6 +252,15 @@ app.get('/tools/:id', async (req, res) => {
 
 // Create a new tool
 app.post('/tools', authenticateToken, upload.single('image'), async (req, res) => {
+  console.log('=== TOOL CREATION REQUEST START ===');
+  console.log('Request body:', JSON.stringify(req.body, null, 2));
+  console.log('Request file:', req.file ? {
+    filename: req.file.filename,
+    originalname: req.file.originalname,
+    mimetype: req.file.mimetype,
+    size: req.file.size
+  } : 'No file uploaded');
+  console.log('User from token:', req.user);
   const { name, price, description, owner_id, created_at, latitude, longitude } = req.body;
   let imageUrl = null;
   
