@@ -252,16 +252,6 @@ app.get('/tools/:id', async (req, res) => {
 
 // Create a new tool
 app.post('/tools', authenticateToken, upload.single('image'), async (req, res) => {
-  console.log('=== TOOL CREATION REQUEST START ===');
-  console.log('Request body:', JSON.stringify(req.body, null, 2));
-  console.log('Request file:', req.file ? {
-    filename: req.file.filename,
-    originalname: req.file.originalname,
-    mimetype: req.file.mimetype,
-    size: req.file.size
-  } : 'No file uploaded');
-  console.log('User from token:', req.user);
-  
   const { name, price, description, owner_id, created_at, latitude, longitude } = req.body;
   let imageUrl = null;
   
@@ -269,16 +259,7 @@ app.post('/tools', authenticateToken, upload.single('image'), async (req, res) =
   if (req.file) {
     imageUrl = `https://starter-ios-app-backend.onrender.com/uploads/${req.file.filename}`;
   }
-  
-  console.log('Parsed data:');
-  console.log('- Name:', name);
-  console.log('- Price:', price);
-  console.log('- Description:', description);
-  console.log('- Owner ID:', owner_id);
-  console.log('- Created At:', created_at);
-  console.log('- Latitude:', latitude);
-  console.log('- Longitude:', longitude);
-  console.log('- Image URL:', imageUrl);
+  console.log(`starting to create tool: ${name} ${price} ${description} ${owner_id} ${created_at} ${latitude} ${longitude}`)
   
   // Parse and format price to one decimal place
   const formattedPrice = price ? parseFloat(price).toFixed(1) : null;
@@ -286,53 +267,16 @@ app.post('/tools', authenticateToken, upload.single('image'), async (req, res) =
   // Parse coordinates
   const lat = latitude ? parseFloat(latitude) : null;
   const lng = longitude ? parseFloat(longitude) : null;
-  
-  console.log('Processed data:');
-  console.log('- Formatted Price:', formattedPrice);
-  console.log('- Parsed Latitude:', lat);
-  console.log('- Parsed Longitude:', lng);
+  console.log(`parsed coordinates: ${lat} ${lng}`)
   
   try {
-    console.log('Executing database query...');
     const result = await pool.query(
       'INSERT INTO tools (name, price, description, owner_id, created_at, image_url, latitude, longitude) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *',
       [name, formattedPrice, description, owner_id, created_at, imageUrl, lat, lng]
     );
-    console.log('Database query successful!');
-    console.log('Created tool:', result.rows[0]);
-    console.log('=== TOOL CREATION REQUEST END ===');
     res.status(201).send(result.rows[0]);
   } catch (err) {
-    console.error('=== TOOL CREATION ERROR ===');
-    console.error('Error message:', err.message);
-    console.error('Error code:', err.code);
-    console.error('Error detail:', err.detail);
-    console.error('Error hint:', err.hint);
-    console.error('Error where:', err.where);
-    console.error('Error schema:', err.schema);
-    console.error('Error table:', err.table);
-    console.error('Error column:', err.column);
-    console.error('Error dataType:', err.dataType);
-    console.error('Error constraint:', err.constraint);
-    console.error('Error file:', err.file);
-    console.error('Error line:', err.line);
-    console.error('Error routine:', err.routine);
-    console.error('Full error object:', JSON.stringify(err, null, 2));
-    console.error('=== TOOL CREATION ERROR END ===');
-    res.status(400).send({ 
-      error: err.message,
-      details: {
-        code: err.code,
-        detail: err.detail,
-        hint: err.hint,
-        where: err.where,
-        schema: err.schema,
-        table: err.table,
-        column: err.column,
-        dataType: err.dataType,
-        constraint: err.constraint
-      }
-    });
+    res.status(400).send({ error: err.message });
   }
 });
 
